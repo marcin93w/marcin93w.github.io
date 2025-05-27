@@ -6,69 +6,90 @@
     <title>Iza &lt;3 Marcin</title>
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: data: https://apis.google.com https://accounts.google.com https://content.googleapis.com https://www.gstatic.com https://ssl.gstatic.com;">
     <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
+        let tokenClient;
+        let accessToken = null;
+
+        function initializeGapiClient() {
+            return gapi.client.init({
+                discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const mediaUpload = document.getElementById('mediaUpload');
+
+            gapi.load('client', initializeGapiClient);
+
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: '600249699299-bpgdubq7iiie8rrbqps9vnit254hkfph.apps.googleusercontent.com',
+                scope: 'https://www.googleapis.com/auth/drive.file',
+                callback: (tokenResponse) => {
+                    accessToken = tokenResponse.access_token;
+                    // After getting token, trigger upload if file is selected
+                    if (mediaUpload.files.length > 0) {
+                        uploadFile(mediaUpload.files[0]);
+                    }
+                },
+            });
+
             mediaUpload.addEventListener('change', function(event) {
                 const files = event.target.files;
                 if (files.length > 0) {
                     const file = files[0];
                     if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
-                        gapi.load('client:auth2', () => {
-                            gapi.client.init({
-                                clientId: '600249699299-bpgdubq7iiie8rrbqps9vnit254hkfph.apps.googleusercontent.com',
-                                discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
-                                scope: 'https://www.googleapis.com/auth/drive.file'
-                            }).then(() => {
-                                return gapi.auth2.getAuthInstance().signIn();
-                            }).then(() => {
-                                const folderId = '1ChOSqybuVrN_mn4K7ZB8YqnkvMHSK7nv'; // <-- Replace with your Google Drive folder ID
-                                const metadata = {
-                                    name: file.name,
-                                    mimeType: file.type,
-                                    parents: [folderId] // This puts the file in the specified folder
-                                };
-                                const accessToken = gapi.auth.getToken().access_token;
-
-                                // 1. Start resumable session
-                                return fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Authorization': 'Bearer ' + accessToken,
-                                        'Content-Type': 'application/json; charset=UTF-8',
-                                        'X-Upload-Content-Type': file.type,
-                                        'X-Upload-Content-Length': file.size
-                                    },
-                                    body: JSON.stringify(metadata)
-                                }).then(res => {
-                                    if (!res.ok) throw new Error('Nie udało się zainicjować przesyłania.');
-                                    const uploadUrl = res.headers.get('Location');
-                                    // 2. Upload the file (whole file as one chunk)
-                                    return fetch(uploadUrl, {
-                                        method: 'PUT',
-                                        headers: {
-                                            'Content-Type': file.type,
-                                            'Content-Length': file.size
-                                        },
-                                        body: file
-                                    });
-                                });
-                            })
-                            .then(response => {
-                                if (response.ok) {
-                                    alert('Plik został wysłany do Google Drive.');
-                                } else {
-                                    alert('Wystąpił błąd podczas wysyłania pliku.');
-                                }
-                            }).catch(error => {
-                                console.error('Błąd: ' + JSON.stringify(error, null, 2));
-                            });
-                        });
+                        if (!accessToken) {
+                            tokenClient.requestAccessToken();
+                        } else {
+                            uploadFile(file);
+                        }
                     } else {
                         alert('Proszę wybrać plik graficzny lub wideo.');
                     }
                 }
             });
+
+            function uploadFile(file) {
+                const folderId = '1ChOSqybuVrN_mn4K7ZB8YqnkvMHSK7nv';
+                const metadata = {
+                    name: file.name,
+                    mimeType: file.type,
+                    parents: [folderId]
+                };
+
+                // 1. Start resumable session
+                fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + accessToken,
+                        'Content-Type': 'application/json; charset=UTF-8',
+                        'X-Upload-Content-Type': file.type,
+                        'X-Upload-Content-Length': file.size
+                    },
+                    body: JSON.stringify(metadata)
+                }).then(res => {
+                    if (!res.ok) throw new Error('Nie udało się zainicjować przesyłania.');
+                    const uploadUrl = res.headers.get('Location');
+                    // 2. Upload the file (whole file as one chunk)
+                    return fetch(uploadUrl, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': file.type,
+                            'Content-Length': file.size
+                        },
+                        body: file
+                    });
+                }).then(response => {
+                    if (response.ok) {
+                        alert('Plik został wysłany do Google Drive.');
+                    } else {
+                        alert('Wystąpił błąd podczas wysyłania pliku.');
+                    }
+                }).catch(error => {
+                    console.error('Błąd: ' + JSON.stringify(error, null, 2));
+                });
+            }
         });
     </script>
 </head>
