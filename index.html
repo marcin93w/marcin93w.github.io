@@ -19,6 +19,7 @@
 
         function setupUpload() {
             const mediaUpload = document.getElementById('mediaUpload');
+            const uploadBtn = document.getElementById('uploadBtn');
 
             gapi.load('client', initializeGapiClient);
 
@@ -34,20 +35,21 @@
                 },
             });
 
-            mediaUpload.addEventListener('change', function(event) {
-                const files = event.target.files;
-                if (files.length > 0) {
-                    const file = files[0];
-                    if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
-                        if (!accessToken) {
-                            // Must be called directly in the event handler!
-                            tokenClient.requestAccessToken();
-                        } else {
-                            uploadFile(file);
-                        }
-                    } else {
-                        alert('Proszę wybrać plik graficzny lub wideo.');
-                    }
+            uploadBtn.addEventListener('click', function() {
+                if (mediaUpload.files.length === 0) {
+                    alert('Najpierw wybierz plik.');
+                    return;
+                }
+                const file = mediaUpload.files[0];
+                if (!(file.type.startsWith('image/') || file.type.startsWith('video/'))) {
+                    alert('Proszę wybrać plik graficzny lub wideo.');
+                    return;
+                }
+                if (!accessToken) {
+                    // Must be called directly in the event handler!
+                    tokenClient.requestAccessToken();
+                } else {
+                    uploadFile(file);
                 }
             });
 
@@ -106,6 +108,7 @@
     <form>
         <label for="mediaUpload">Wybierz zdjęcie lub wideo:</label>
         <input type="file" id="mediaUpload" name="mediaUpload" accept="image/*,video/*">
+        <button type="button" id="uploadBtn">Wyślij plik</button>
     </form>
 </body>
 </html>
