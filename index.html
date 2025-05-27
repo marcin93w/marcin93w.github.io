@@ -6,7 +6,7 @@
     <title>Iza &lt;3 Marcin</title>
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: data: https://apis.google.com https://accounts.google.com https://content.googleapis.com https://www.gstatic.com https://ssl.gstatic.com;">
     <script src="https://apis.google.com/js/api.js"></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
     <script>
         let tokenClient;
         let accessToken = null;
@@ -17,7 +17,7 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        function setupUpload() {
             const mediaUpload = document.getElementById('mediaUpload');
 
             gapi.load('client', initializeGapiClient);
@@ -27,7 +27,7 @@
                 scope: 'https://www.googleapis.com/auth/drive.file',
                 callback: (tokenResponse) => {
                     accessToken = tokenResponse.access_token;
-                    // After getting token, trigger upload if file is selected
+                    // Upload after token is received
                     if (mediaUpload.files.length > 0) {
                         uploadFile(mediaUpload.files[0]);
                     }
@@ -40,6 +40,7 @@
                     const file = files[0];
                     if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
                         if (!accessToken) {
+                            // Must be called directly in the event handler!
                             tokenClient.requestAccessToken();
                         } else {
                             uploadFile(file);
@@ -58,7 +59,6 @@
                     parents: [folderId]
                 };
 
-                // 1. Start resumable session
                 fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable', {
                     method: 'POST',
                     headers: {
@@ -71,7 +71,6 @@
                 }).then(res => {
                     if (!res.ok) throw new Error('Nie udało się zainicjować przesyłania.');
                     const uploadUrl = res.headers.get('Location');
-                    // 2. Upload the file (whole file as one chunk)
                     return fetch(uploadUrl, {
                         method: 'PUT',
                         headers: {
@@ -89,6 +88,15 @@
                 }).catch(error => {
                     console.error('Błąd: ' + JSON.stringify(error, null, 2));
                 });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.google && window.google.accounts && window.google.accounts.oauth2) {
+                setupUpload();
+            } else {
+                const gisScript = document.querySelector('script[src*="gsi/client"]');
+                gisScript.addEventListener('load', setupUpload);
             }
         });
     </script>
