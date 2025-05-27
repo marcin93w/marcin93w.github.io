@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iza &lt;3 Marcin</title>
+    <script src="https://apis.google.com/js/api.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const mediaUpload = document.getElementById('mediaUpload');
@@ -14,8 +15,7 @@
                     if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
                         gapi.load('client:auth2', () => {
                             gapi.client.init({
-                                apiKey: 'YOUR_API_KEY',
-                                clientId: 'YOUR_CLIENT_ID.apps.googleusercontent.com',
+                                clientId: '600249699299-bpgdubq7iiie8rrbqps9vnit254hkfph.apps.googleusercontent.com',
                                 discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
                                 scope: 'https://www.googleapis.com/auth/drive.file'
                             }).then(() => {
