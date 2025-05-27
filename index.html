@@ -61,7 +61,7 @@
                                     alert('Wystąpił błąd podczas wysyłania pliku.');
                                 }
                             }).catch(error => {
-                                alert('Błąd: ' + error.message);
+                                alert('Błąd: ' + JSON.stringify(error, null, 2));
                             });
                         });
                     } else {
