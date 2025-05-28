@@ -10,6 +10,14 @@
     <script src="https://apis.google.com/js/api.js"></script>
     <script src="https://accounts.google.com/gsi/client"></script>
     <script>
+        const greetings = [
+            "Dziękujemy!",
+            "Dziękujemy za przesłanie!",
+            "Super! Mamy to :)",
+            "Dzięki!",
+            "Poszło! :)"
+        ];
+
         let tokenClient;
         let accessToken = null;
 
@@ -129,6 +137,8 @@
                     });
                 }).then(response => {
                     if (response.ok) {
+                        const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];
+                        successOverlay.textContent = randomGreeting;
                         successOverlay.style.display = 'flex';
                         displayHearsAnimation();
                         setTimeout(() => {
@@ -187,7 +197,7 @@
         }
 
         .line {
-            color: #ffd000;
+            color: #d2ab00;
             margin-top: 15px;
         }
 
@@ -201,8 +211,8 @@
         }
 
         #mediaUploadBtn {
-            padding: 12px 28px;
-            background: #ffd000;
+            padding: 28px 28px;
+            background: #d2ab00;
             color: #293b59;
             border-radius: 24px;
             font-size: 1em;
@@ -263,7 +273,7 @@
         </div>
     </form>
     <div id="success-overlay" style="display:none;">
-        <div>Dziękujemy!</div>
+        Dziękujemy!
     </div>
 </body>
 </html>
