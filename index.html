@@ -24,7 +24,7 @@
 
             for (let i = 0; i < heartsCount; i++) {
                 const heart = document.createElement('div');
-                heart.textContent = '❤️';
+                heart.textContent = i % 2 ? '💛' : '🩵';
                 heart.className = 'heart-emoji';
                 heart.style.position = 'absolute';
                 heart.style.left = Math.random() * (overlayWidth - 40) + 'px';
@@ -225,7 +225,7 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.8);
-            color: #ffd000;
+            color: antiquewhite;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -252,7 +252,7 @@
         <p>To miejsce stworzyliśmy specjalnie dla Was – gości weselnych!</p>
         <p>Jeśli uchwyciliście wyjątkowe momenty podczas naszego przyjęcia – zdjęcia, filmy, życzenia czy wzruszające chwile – bardzo chcielibyśmy je zobaczyć.</p>
         <p>Wrzucajcie tutaj swoje materiały, abyśmy mogli razem stworzyć piękną pamiątkę z naszego wesela.</p> 
-        <p>Dziękujemy, że jesteście z nami i że pomagacie nam zachować te niezapomniane wspomnienia! ❤️</p>
+        <p>Dziękujemy, że jesteście z nami i że pomagacie nam zachować te niezapomniane wspomnienia! 💛</p>
     </div>
     <div class="header line"> | </div>
     <form>
