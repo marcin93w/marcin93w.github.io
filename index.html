@@ -54,6 +54,9 @@
             });
 
             function uploadFile(file) {
+                mediaUploadBtn.textContent = 'Przesyłanie...';
+                mediaUploadBtn.disabled = true;
+
                 const folderId = '1ChOSqybuVrN_mn4K7ZB8YqnkvMHSK7nv';
                 const metadata = {
                     name: file.name,
@@ -82,13 +85,15 @@
                         body: file
                     });
                 }).then(response => {
-                    if (response.ok) {
-                        alert('Plik został wysłany do Google Drive.');
-                    } else {
+                    if (!response.ok) {
                         alert('Wystąpił błąd podczas wysyłania pliku.');
                     }
+                    mediaUploadBtn.textContent = 'Wyślij kolejny plik';
+                    mediaUploadBtn.disabled = false;
                 }).catch(error => {
                     console.error('Błąd: ' + JSON.stringify(error, null, 2));
+                    mediaUploadBtn.textContent = 'Wyślij kolejny plik';
+                    mediaUploadBtn.disabled = false;
                 });
             }
         }
