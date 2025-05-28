@@ -28,6 +28,7 @@
                 scope: 'https://www.googleapis.com/auth/drive.file',
                 callback: (tokenResponse) => {
                     accessToken = tokenResponse.access_token;
+                    mediaUploadBtn.textContent = 'Wybierz zdjęcie lub wideo';
                     // Now open file picker
                     mediaUpload.click();
                 },
@@ -180,8 +181,8 @@
     <div class="header line"> | </div>
     <form>
         <div class="form">
-            <button type="button" id="mediaUploadBtn">Wybierz plik</button>
-            <input type="file" id="mediaUpload" name="mediaUpload" accept="image/*,video/*" style="display:none;">
+            <button type="button" id="mediaUploadBtn">Zaloguj się kontem Google i prześlij plik</button>
+            <input type="file" id="mediaUpload" name="mediaUpload" accept="image/*,video/*,capture=camera" style="display:none;">
         </div>
     </form>
 </body>
