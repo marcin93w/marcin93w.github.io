@@ -19,7 +19,7 @@
 
         function setupUpload() {
             const mediaUpload = document.getElementById('mediaUpload');
-            const uploadBtn = document.getElementById('uploadBtn');
+            const mediaUploadBtn = document.getElementById('mediaUploadBtn');
 
             gapi.load('client', initializeGapiClient);
 
@@ -28,29 +28,28 @@
                 scope: 'https://www.googleapis.com/auth/drive.file',
                 callback: (tokenResponse) => {
                     accessToken = tokenResponse.access_token;
-                    // Upload after token is received
-                    if (mediaUpload.files.length > 0) {
-                        uploadFile(mediaUpload.files[0]);
-                    }
+                    // Now open file picker
+                    mediaUpload.click();
                 },
             });
 
-            uploadBtn.addEventListener('click', function() {
-                if (mediaUpload.files.length === 0) {
-                    alert('Najpierw wybierz plik.');
-                    return;
+            mediaUploadBtn.addEventListener('click', function() {
+                if (!accessToken) {
+                    // Must be called directly in the event handler!
+                    tokenClient.requestAccessToken();
+                } else {
+                    mediaUpload.click();
                 }
+            });
+
+            mediaUpload.addEventListener('change', function() {
+                if (mediaUpload.files.length === 0) return;
                 const file = mediaUpload.files[0];
                 if (!(file.type.startsWith('image/') || file.type.startsWith('video/'))) {
                     alert('Proszę wybrać plik graficzny lub wideo.');
                     return;
                 }
-                if (!accessToken) {
-                    // Must be called directly in the event handler!
-                    tokenClient.requestAccessToken();
-                } else {
-                    uploadFile(file);
-                }
+                uploadFile(file);
             });
 
             function uploadFile(file) {
@@ -94,13 +93,6 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            const mediaUploadBtn = document.getElementById('mediaUploadBtn');
-            const mediaUpload = document.getElementById('mediaUpload');
-            if (mediaUploadBtn && mediaUpload) {
-                mediaUploadBtn.addEventListener('click', function() {
-                    mediaUpload.click();
-                });
-            }
             if (window.google && window.google.accounts && window.google.accounts.oauth2) {
                 setupUpload();
             } else {
@@ -190,9 +182,6 @@
         <div class="form">
             <button type="button" id="mediaUploadBtn">Wybierz plik</button>
             <input type="file" id="mediaUpload" name="mediaUpload" accept="image/*,video/*" style="display:none;">
-        </div>
-        <div class="form">
-            <button type="button" id="uploadBtn">Wyślij plik</button>
         </div>
     </form>
 </body>
