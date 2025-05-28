@@ -102,13 +102,71 @@
             }
         });
     </script>
+    <style>
+        @font-face {
+            font-family: 'SpecialFont';
+            src: url('OPTIGaramondSpecial-Light/OPTIGaramondSpecial-Light.ttf.woff') format('woff'),
+                 url('OPTIGaramondSpecial-Light/OPTIGaramondSpecial-Light.ttf.svg#OPTICubaLibreTwo') format('svg'),
+                 url('OPTIGaramondSpecial-Light/OPTIGaramondSpecial-Light.ttf.eot'),
+                 url('OPTIGaramondSpecial-Light/OPTIGaramondSpecial-Light.ttf.eot?#iefix') format('embedded-opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        body {
+            background-color: #293b59;
+            font-family: Verdana, sans-serif;
+            color: #faebd7;
+            text-align: center;
+        }
+
+        .top {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .header {
+            font-family: 'SpecialFont', Verdana, sans-serif;
+            letter-spacing: 0.15em;
+            font-size: 2em;
+            text-transform: uppercase;
+        }
+
+        .line {
+            color: #ffd000;
+        }
+
+        .content {
+            padding: 0 20px;
+            letter-spacing: 0.05em;
+        }
+
+        .form {
+            margin: 20px auto;
+        }
+    </style>
 </head>
 <body>
-    <h1>Iza &lt;3 Marcin</h1>
+    <div class="top">
+        <div class="header">Izabela</div>
+        <div class="header"><img src="oraz.svg" width="150px" /></div>
+        <div class="header">Marcin</div>
+        <div class="header line"> | </div>
+    </div>
+    <div class="content">
+        <p>Podziel się wspomnieniami! 📸🎥</p>
+        <p>To miejsce stworzyliśmy specjalnie dla Was – gości weselnych!</p>
+        <p>Jeśli uchwyciliście wyjątkowe momenty podczas naszego przyjęcia – zdjęcia, filmy, życzenia czy wzruszające chwile – bardzo chcielibyśmy je zobaczyć.</p>
+        <p>Wrzucajcie tutaj swoje materiały, abyśmy mogli razem stworzyć piękną pamiątkę z naszego wesela.</p> 
+        <p>Dziękujemy, że jesteście z nami i że pomagacie nam zachować te niezapomniane wspomnienia! ❤️</p>
+    </div>
+    <div class="header line"> | </div>
     <form>
-        <label for="mediaUpload">Wybierz zdjęcie lub wideo:</label>
-        <input type="file" id="mediaUpload" name="mediaUpload" accept="image/*,video/*">
-        <button type="button" id="uploadBtn">Wyślij plik</button>
+        <div class="form">
+            <input type="file" id="mediaUpload" name="mediaUpload" accept="image/*,video/*">
+        </div>
+        <div class="form">
+            <button type="button" id="uploadBtn">Wyślij plik</button>
+        </div>
     </form>
 </body>
 </html>
