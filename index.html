@@ -94,6 +94,13 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            const mediaUploadBtn = document.getElementById('mediaUploadBtn');
+            const mediaUpload = document.getElementById('mediaUpload');
+            if (mediaUploadBtn && mediaUpload) {
+                mediaUploadBtn.addEventListener('click', function() {
+                    mediaUpload.click();
+                });
+            }
             if (window.google && window.google.accounts && window.google.accounts.oauth2) {
                 setupUpload();
             } else {
@@ -143,6 +150,25 @@
         .form {
             margin: 20px auto;
         }
+
+        #mediaUploadBtn {
+            padding: 12px 28px;
+            background: #ffd000;
+            color: #293b59;
+            border-radius: 24px;
+            font-size: 1em;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            border: none;
+            margin-right: 10px;
+        }
+        #mediaUploadBtn:hover, #mediaUploadBtn:focus {
+            background: #ffe066;
+            color: #1a2537;
+        }
     </style>
 </head>
 <body>
@@ -162,7 +188,8 @@
     <div class="header line"> | </div>
     <form>
         <div class="form">
-            <input type="file" id="mediaUpload" name="mediaUpload" accept="image/*,video/*">
+            <button type="button" id="mediaUploadBtn">Wybierz plik</button>
+            <input type="file" id="mediaUpload" name="mediaUpload" accept="image/*,video/*" style="display:none;">
         </div>
         <div class="form">
             <button type="button" id="uploadBtn">Wyślij plik</button>
